@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -53,10 +53,6 @@ export default function RelatorioCategorias() {
       setCarregando(false);
     }
   };
-
-  useEffect(() => {
-    buscarRelatorio();
-  }, []);
 
   const dadosGrafico = dados
     ? {
