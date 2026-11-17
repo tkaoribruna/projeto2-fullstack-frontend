@@ -24,6 +24,9 @@ export default function Lancamentos() {
   const [sucesso, setSucesso] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
+  const fonteSelecionada = fontes.find(
+    f => String(f.id) === formulario.fonteDestinoId
+  );
 
   const requisitar = useCallback(async (caminho, opcoes = {}) => {
     const token = localStorage.getItem('token');
@@ -101,6 +104,10 @@ export default function Lancamentos() {
       ...atual,
       [name]: value,
       ...(name === 'tipo' ? { categoriaId: '' } : {}),
+      ...(name === 'fonteDestinoId' &&
+        fontes.find(f => String(f.id) === value)?.tipo !== 'cartao_credito'
+        ? { totalParcelas: '1' }
+        : {}),
     }));
   }
 
@@ -140,7 +147,8 @@ export default function Lancamentos() {
         data: formulario.data,
         categoriaId: Number(formulario.categoriaId),
         fonteDestinoId: Number(formulario.fonteDestinoId),
-        totalParcelas: editandoId
+        totalParcelas: editandoId ||
+          fonteSelecionada?.tipo !== 'cartao_credito'
           ? 1
           : Number(formulario.totalParcelas),
       };
@@ -197,7 +205,7 @@ export default function Lancamentos() {
   }
 
   return (
-    <main>
+    <main className="pagina-lancamentos">
       <h1>Lançamentos financeiros</h1>
 
       {erro && <p role="alert">{erro}</p>}
@@ -301,7 +309,7 @@ export default function Lancamentos() {
           </select>
         </div>
 
-        {!editandoId && (
+        {!editandoId && fonteSelecionada?.tipo === 'cartao_credito' && (
           <div>
             <label htmlFor="totalParcelas">
               Número de parcelas
@@ -335,65 +343,87 @@ export default function Lancamentos() {
         )}
       </form>
 
-      <h2>Meus lançamentos</h2>
+      <section className="lista-lancamentos">
+        <h2>Meus lançamentos</h2>
 
-      <button
-        type="button"
-        onClick={carregar}
-        disabled={carregando}
-      >
-        Atualizar lista
-      </button>
+        <button
+          type="button"
+          onClick={carregar}
+          disabled={carregando}
+        >
+          Atualizar lista
+        </button>
 
-      {carregando ? (
-        <p>Carregando...</p>
-      ) : lancamentos.length === 0 ? (
-        <p>Nenhum lançamento encontrado.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Tipo</th>
-              <th>Valor</th>
-              <th>Data</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
+        {carregando ? (
+          <p>Carregando...</p>
+        ) : lancamentos.length === 0 ? (
+          <p>Nenhum lançamento encontrado.</p>
+        ) : (
+          <div className="tabela-lancamentos-scroll">
+            <table className="tabela-lancamentos">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
 
-          <tbody>
-            {lancamentos.map(item => (
-              <tr key={item.id}>
-                <td>{item.descricao}</td>
-                <td>{item.tipo}</td>
-                <td>{formatarValor(item.valor)}</td>
-                <td>
-                  {String(item.data ?? '')
-                    .slice(0, 10)
-                    .split('-')
-                    .reverse()
-                    .join('/')}
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    onClick={() => editar(item)}
-                  >
-                    Editar
-                  </button>
+              <tbody>
+                {lancamentos.map(item => {
+                  const cartaoCredito = fontes.find(
+                    fonte => String(fonte.id) === String(item.fonteDestinoId)
+                  )?.tipo === 'cartao_credito';
+                  const totalParcelas = Number(item.totalParcelas) || 1;
 
-                  <button
-                    type="button"
-                    onClick={() => excluir(item.id)}
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        {item.descricao}
+                        {cartaoCredito && (
+                          <small className="detalhe-parcelas">
+                            {totalParcelas} {totalParcelas === 1 ? 'parcela' : 'parcelas'}
+                            {totalParcelas > 1 &&
+                              ` · parcela ${item.parcelaAtual}/${totalParcelas}`}
+                          </small>
+                        )}
+                      </td>
+                      <td>{item.tipo}</td>
+                      <td>{formatarValor(item.valor)}</td>
+                      <td>
+                        {String(item.data ?? '')
+                          .slice(0, 10)
+                          .split('-')
+                          .reverse()
+                          .join('/')}
+                      </td>
+                      <td>
+                        <div className="acoes-lancamento">
+                          <button
+                            type="button"
+                            onClick={() => editar(item)}
+                          >
+                            Editar
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => excluir(item.id)}
+                          >
+                            Excluir
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </main>
   );
 }
