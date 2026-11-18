@@ -452,10 +452,6 @@ export default function Lancamentos() {
           </div>
         </form>
 
-        <button type="button" onClick={carregar} disabled={carregando}>
-          Atualizar lista
-        </button>
-
         {carregando ? (
           <p>Carregando...</p>
         ) : (
@@ -555,6 +551,12 @@ export default function Lancamentos() {
                 </button>
               </div>
             )}
+
+            <div className="acao-atualizar-lista">
+              <button type="button" onClick={carregar} disabled={carregando}>
+                Atualizar lista
+              </button>
+            </div>
           </>
         )}
       </section>
