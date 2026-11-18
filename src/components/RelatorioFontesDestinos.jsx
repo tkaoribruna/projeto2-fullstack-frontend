@@ -186,57 +186,63 @@ export default function RelatorioFontesDestinos() {
                 />
               </section>
 
-              <h2>Entradas por fonte</h2>
-              {entradasPorFonte.length === 0 ? (
-                <p>Nenhuma entrada registrada no período.</p>
-              ) : (
-                <div className="tabela-relatorio">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Fonte</th>
-                        <th>Tipo</th>
-                        <th>Total recebido</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {entradasPorFonte.map(item => (
-                        <tr key={item.id}>
-                          <td>{item.nome}</td>
-                          <td>{NOMES_TIPOS[item.tipo] ?? item.tipo}</td>
-                          <td>{formatarMoeda(item.entradas)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+              <div className="fontes-destinos-tabelas">
+                <section className="tabela-secao" aria-labelledby="titulo-entradas-fonte">
+                  <h2 id="titulo-entradas-fonte">Entradas por fonte</h2>
+                  {entradasPorFonte.length === 0 ? (
+                    <p>Nenhuma entrada registrada no período.</p>
+                  ) : (
+                    <div className="tabela-relatorio">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th scope="col">Fonte</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Total recebido</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {entradasPorFonte.map(item => (
+                            <tr key={item.id}>
+                              <td>{item.nome}</td>
+                              <td>{NOMES_TIPOS[item.tipo] ?? item.tipo}</td>
+                              <td>{formatarMoeda(item.entradas)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </section>
 
-              <h2>Saídas por destino</h2>
-              {saidasPorDestino.length === 0 ? (
-                <p>Nenhuma saída registrada no período.</p>
-              ) : (
-                <div className="tabela-relatorio">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Destino</th>
-                        <th>Tipo</th>
-                        <th>Total gasto</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {saidasPorDestino.map(item => (
-                        <tr key={item.id}>
-                          <td>{item.nome}</td>
-                          <td>{NOMES_TIPOS[item.tipo] ?? item.tipo}</td>
-                          <td>{formatarMoeda(item.saidas)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                <section className="tabela-secao" aria-labelledby="titulo-saidas-destino">
+                  <h2 id="titulo-saidas-destino">Saídas por destino</h2>
+                  {saidasPorDestino.length === 0 ? (
+                    <p>Nenhuma saída registrada no período.</p>
+                  ) : (
+                    <div className="tabela-relatorio">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th scope="col">Destino</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Total gasto</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {saidasPorDestino.map(item => (
+                            <tr key={item.id}>
+                              <td>{item.nome}</td>
+                              <td>{NOMES_TIPOS[item.tipo] ?? item.tipo}</td>
+                              <td>{formatarMoeda(item.saidas)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </section>
+              </div>
 
               <h2>Saldo das contas</h2>
               {contas.length === 0 ? (
