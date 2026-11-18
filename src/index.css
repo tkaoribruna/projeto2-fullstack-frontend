@@ -279,6 +279,16 @@ main {
   overflow-x: auto;
 }
 
+.acao-atualizar-lista {
+  display: flex;
+  justify-content: flex-start;
+  margin: 16px 20px 20px;
+}
+
+.acao-atualizar-lista button {
+  margin: 0;
+}
+
 .tabela-lancamentos {
   width: 100%;
   min-width: 720px;
