@@ -68,7 +68,7 @@ export default function RelatorioCategorias() {
     : null;
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '1.5rem' }}>
+    <main className="relatorio-categorias">
       <h2>Relatório por Categoria</h2>
 
       {/* Filtro de Período */}
@@ -95,15 +95,16 @@ export default function RelatorioCategorias() {
           </p>
 
           {/* Seção de Saídas: Tabela + Gráfico */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem', alignItems: 'center', marginTop: '1.5rem' }}>
-            <div>
+          <div className="categorias-conteudo">
+            <div className="categorias-tabela">
               <h3>Saídas por Categoria — Total: {formatarMoeda(dados.totalSaidas)}</h3>
               {dados.categorias.length === 0 ? (
                 <p>Nenhuma saída registrada neste período.</p>
               ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <div className="tabela-relatorio">
+                <table>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid #ddd' }}>
+                    <tr>
                       <th>Categoria</th>
                       <th>Total</th>
                       <th>%</th>
@@ -118,8 +119,8 @@ export default function RelatorioCategorias() {
                       const sinal = diff > 0 ? '▲ Aumento' : diff < 0 ? '▼ Redução' : '— Igual';
 
                       return (
-                        <tr key={cat.id} style={{ borderBottom: '1px solid #eee' }}>
-                          <td style={{ padding: '0.5rem 0' }}>{cat.nome}</td>
+                        <tr key={cat.id}>
+                          <td>{cat.nome}</td>
                           <td>{formatarMoeda(cat.total)}</td>
                           <td>{cat.percentual}%</td>
                           <td>{formatarMoeda(cat.periodoAnterior)}</td>
@@ -131,40 +132,43 @@ export default function RelatorioCategorias() {
                     })}
                   </tbody>
                 </table>
+                </div>
               )}
             </div>
 
-            <div style={{ maxWidth: '320px', margin: '0 auto' }}>
+            <div className="categorias-grafico">
               {dados.categorias.length > 0 && <Doughnut data={dadosGrafico} />}
             </div>
           </div>
 
           {/* Seção de Entradas */}
-          <div style={{ marginTop: '2.5rem' }}>
+          <div className="categorias-tabela categorias-entradas">
             <h3>Entradas por Categoria — Total: {formatarMoeda(dados.totalEntradas)}</h3>
             {dados.entradasPorCategoria.length === 0 ? (
               <p>Nenhuma entrada registrada neste período.</p>
             ) : (
-              <table style={{ width: '100%', maxWidth: '500px', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <div className="tabela-relatorio">
+              <table>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid #ddd' }}>
+                  <tr>
                     <th>Categoria</th>
                     <th>Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {dados.entradasPorCategoria.map((ent) => (
-                    <tr key={ent.id} style={{ borderBottom: '1px solid #eee' }}>
-                      <td style={{ padding: '0.5rem 0' }}>{ent.nome}</td>
-                      <td style={{ color: '#16a34a', fontWeight: 'bold' }}>{formatarMoeda(ent.total)}</td>
+                    <tr key={ent.id}>
+                      <td>{ent.nome}</td>
+                      <td className="valor-entrada">{formatarMoeda(ent.total)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </>
       )}
-    </div>
+    </main>
   );
 }
