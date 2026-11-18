@@ -1,22 +1,26 @@
-// App.jsx => Controla cadastro, login e lançamentos.
+// App.jsx => Controla o acesso e a navegação entre as telas.
 
 import { useState } from 'react';
 import Cadastro from './components/Cadastro.jsx';
 import Categorias from './components/Categorias.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import FontesDestinos from './components/FontesDestinos.jsx';
 import Login from './components/Login.jsx';
 import Lancamentos from './components/Lancamentos.jsx';
 import RelatorioCategorias from './components/RelatorioCategorias.jsx';
 import RelatorioFontesDestinos from './components/RelatorioFontesDestinos.jsx';
+import Faturas from './components/Faturas.jsx';
 
 function App() {
   const [tela, setTela] = useState('cadastro');
   const telasAutenticadas = [
+    'dashboard',
     'lancamentos',
     'categorias',
     'fontes',
     'relatorio',
     'relatorio-fontes',
+    'faturas',
   ];
   const autenticado = telasAutenticadas.includes(tela);
 
@@ -29,6 +33,13 @@ function App() {
     <div className={`app-shell${autenticado ? ' app-shell--autenticado' : ''}`}>
       {autenticado && (
         <nav className="menu-principal" aria-label="Menu principal">
+          <button
+            type="button"
+            aria-current={tela === 'dashboard' ? 'page' : undefined}
+            onClick={() => setTela('dashboard')}
+          >
+            Resumo
+          </button>
           <button
             type="button"
             aria-current={tela === 'lancamentos' ? 'page' : undefined}
@@ -64,6 +75,13 @@ function App() {
           >
             Relatório fontes/destinos
           </button>
+          <button
+            type="button"
+            aria-current={tela === 'faturas' ? 'page' : undefined}
+            onClick={() => setTela('faturas')}
+          >
+            Faturas
+          </button>
           <button type="button" onClick={sair}>
             Sair
           </button>
@@ -73,14 +91,16 @@ function App() {
       {tela === 'cadastro' && <Cadastro />}
 
       {tela === 'login' && (
-        <Login aoLogar={() => setTela('lancamentos')} />
+        <Login aoLogar={() => setTela('dashboard')} />
       )}
 
+      {tela === 'dashboard' && <Dashboard />}
       {tela === 'lancamentos' && <Lancamentos />}
       {tela === 'categorias' && <Categorias />}
       {tela === 'fontes' && <FontesDestinos />}
       {tela === 'relatorio' && <RelatorioCategorias />}
       {tela === 'relatorio-fontes' && <RelatorioFontesDestinos />}
+      {tela === 'faturas' && <Faturas />}
 
       {tela === 'cadastro' && (
         <div className="auth-switch">

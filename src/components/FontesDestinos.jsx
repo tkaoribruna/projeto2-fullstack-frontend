@@ -1,4 +1,6 @@
-import { useCallback, useState } from 'react';
+// FontesDestinos.jsx => Cadastra, lista, edita e exclui fontes e destinos.
+
+import { useState } from 'react';
 
 const API = 'http://localhost:3000/api';
 
@@ -16,90 +18,117 @@ const NOMES_TIPOS = {
   cartao_credito: 'Cartão de crédito',
 };
 
+async function requisitar(caminho, opcoes = {}) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('Faça login novamente.');
+  }
+
+  const resposta = await fetch(`${API}/fontes-destinos${caminho}`, {
+    ...opcoes,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (resposta.status === 204) return null;
+
+  const dados = await resposta.json().catch(() => null);
+
+  if (!resposta.ok) {
+    const detalhes = dados?.campos
+      ? Object.values(dados.campos).join(' ')
+      : '';
+
+    throw new Error(detalhes || dados?.erro || `Erro ${resposta.status}`);
+  }
+
+  return dados;
+}
+
+function formatarValor(valor) {
+  return Number(valor).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+}
+
 export default function FontesDestinos() {
   const [fontes, setFontes] = useState([]);
   const [formulario, setFormulario] = useState(INICIAL);
+  const [editandoId, setEditandoId] = useState(null);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [fontesCarregadas, setFontesCarregadas] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
 
-  const requisitar = useCallback(async (caminho, opcoes = {}) => {
-    const token = localStorage.getItem('token');
+  const editando = editandoId !== null;
+  const cartaoCredito = formulario.tipo === 'cartao_credito';
 
-    if (!token) {
-      throw new Error('Faça login novamente.');
-    }
-
-    const resposta = await fetch(`${API}${caminho}`, {
-      ...opcoes,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        ...opcoes.headers,
-      },
-    });
-
-    const dados = await resposta.json().catch(() => null);
-
-    if (!resposta.ok) {
-      const detalhes = dados?.campos
-        ? Object.values(dados.campos).join(' ')
-        : '';
-      throw new Error(detalhes || dados?.erro || `Erro ${resposta.status}`);
-    }
-
-    return dados;
-  }, []);
-
-  const carregar = useCallback(async () => {
+  async function carregar() {
     setCarregando(true);
     setErro('');
 
     try {
-      const dados = await requisitar('/fontes-destinos');
+      const dados = await requisitar('');
       setFontes(Array.isArray(dados) ? dados : []);
       setFontesCarregadas(true);
-      setErro('');
     } catch (e) {
       setErro(e.message);
     } finally {
       setCarregando(false);
     }
-  }, [requisitar]);
+  }
 
   function alterar(evento) {
     const { name, value } = evento.target;
     setFormulario(atual => ({ ...atual, [name]: value }));
   }
 
-  async function cadastrar(evento) {
+  function editar(fonte) {
+    setEditandoId(fonte.id);
+    setFormulario({
+      nome: fonte.nome,
+      tipo: fonte.tipo,
+      diaFechamento: fonte.diaFechamento ?? '',
+      diaVencimento: fonte.diaVencimento ?? '',
+      limite: fonte.limite ?? '',
+    });
+    setErro('');
+    setSucesso('');
+    document.getElementById('fonte-nome')?.focus();
+  }
+
+  function cancelarEdicao() {
+    setEditandoId(null);
+    setFormulario(INICIAL);
+  }
+
+  async function salvar(evento) {
     evento.preventDefault();
     setErro('');
     setSucesso('');
     setSalvando(true);
 
-    const cartaoCredito = formulario.tipo === 'cartao_credito';
-
     try {
-      await requisitar('/fontes-destinos', {
-        method: 'POST',
+      await requisitar(editando ? `/${editandoId}` : '', {
+        method: editando ? 'PUT' : 'POST',
         body: JSON.stringify({
           nome: formulario.nome.trim(),
           tipo: formulario.tipo,
-          diaFechamento: cartaoCredito
-            ? Number(formulario.diaFechamento)
-            : null,
-          diaVencimento: cartaoCredito
-            ? Number(formulario.diaVencimento)
-            : null,
+          diaFechamento: cartaoCredito ? Number(formulario.diaFechamento) : null,
+          diaVencimento: cartaoCredito ? Number(formulario.diaVencimento) : null,
           limite: cartaoCredito ? Number(formulario.limite) : null,
         }),
       });
 
-      setFormulario({ ...INICIAL });
-      setSucesso('Fonte/destino cadastrada com sucesso.');
+      cancelarEdicao();
+      setSucesso(editando
+        ? 'Fonte/destino atualizada com sucesso.'
+        : 'Fonte/destino cadastrada com sucesso.');
       await carregar();
     } catch (e) {
       setErro(e.message);
@@ -108,19 +137,37 @@ export default function FontesDestinos() {
     }
   }
 
-  function formatarValor(valor) {
-    return Number(valor).toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    });
+  async function excluir(fonte) {
+    if (!window.confirm(`Excluir "${fonte.nome}"?`)) return;
+
+    setErro('');
+    setSucesso('');
+    setSalvando(true);
+
+    try {
+      await requisitar(`/${fonte.id}`, { method: 'DELETE' });
+
+      if (editandoId === fonte.id) cancelarEdicao();
+
+      setSucesso('Fonte/destino excluída com sucesso.');
+      await carregar();
+    } catch (e) {
+      setErro(e.message);
+    } finally {
+      setSalvando(false);
+    }
   }
 
   return (
     <main>
       <h1>Fontes e destinos</h1>
 
-      <h2>Cadastrar fonte/destino</h2>
-      <form onSubmit={cadastrar}>
+      {erro && <p role="alert" style={{ color: '#b91c1c' }}>{erro}</p>}
+      {sucesso && <p role="status" style={{ color: '#1e3a8a' }}>{sucesso}</p>}
+
+      <h2>{editando ? 'Editar fonte/destino' : 'Cadastrar fonte/destino'}</h2>
+
+      <form onSubmit={salvar}>
         <div>
           <label htmlFor="fonte-nome">Nome</label>
           <input
@@ -147,7 +194,7 @@ export default function FontesDestinos() {
           </select>
         </div>
 
-        {formulario.tipo === 'cartao_credito' && (
+        {cartaoCredito && (
           <>
             <div>
               <label htmlFor="diaFechamento">Dia de fechamento (1–31)</label>
@@ -196,25 +243,32 @@ export default function FontesDestinos() {
           </>
         )}
 
-        {erro && <p role="alert">{erro}</p>}
-        {sucesso && <p role="status">{sucesso}</p>}
-
         <button type="submit" disabled={salvando}>
-          {salvando ? 'Cadastrando...' : 'Cadastrar'}
+          {salvando ? 'Aguarde...' : editando ? 'Salvar alterações' : 'Cadastrar'}
         </button>
+
+        {editando && (
+          <button type="button" onClick={cancelarEdicao} disabled={salvando}>
+            Cancelar edição
+          </button>
+        )}
       </form>
 
       <h2>Minhas fontes/destinos</h2>
-      <button type="button" onClick={carregar} disabled={carregando}>
+
+      <button type="button" onClick={carregar} disabled={carregando || salvando}>
         {carregando ? 'Carregando...' : 'Atualizar lista'}
       </button>
-      {carregando ? (
-        <p>Carregando...</p>
-      ) : fontesCarregadas && fontes.length === 0 ? (
-        <p>Nenhuma fonte/destino cadastrada.</p>
-      ) : !fontesCarregadas ? (
+
+      {!carregando && !fontesCarregadas && (
         <p>Atualize a lista para consultar as fontes/destinos cadastradas.</p>
-      ) : (
+      )}
+
+      {!carregando && fontesCarregadas && fontes.length === 0 && (
+        <p>Nenhuma fonte/destino cadastrada.</p>
+      )}
+
+      {!carregando && fontes.length > 0 && (
         <ul>
           {fontes.map(fonte => (
             <li key={fonte.id}>
@@ -226,6 +280,15 @@ export default function FontesDestinos() {
                   {' '}· Limite: {formatarValor(fonte.limite)}
                 </span>
               )}
+
+              <div className="acoes-lancamento">
+                <button type="button" onClick={() => editar(fonte)} disabled={salvando}>
+                  Editar
+                </button>
+                <button type="button" onClick={() => excluir(fonte)} disabled={salvando}>
+                  Excluir
+                </button>
+              </div>
             </li>
           ))}
         </ul>
