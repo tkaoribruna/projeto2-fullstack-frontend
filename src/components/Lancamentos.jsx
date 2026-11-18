@@ -375,7 +375,7 @@ export default function Lancamentos() {
           </div>
         )}
 
-          <button type="submit" disabled={salvando}>
+          <button className="botao-cadastrar-lancamento" type="submit" disabled={salvando}>
             {salvando ? 'Salvando...' : editando ? 'Salvar alterações' : 'Cadastrar lançamento'}
           </button>
 
@@ -444,10 +444,12 @@ export default function Lancamentos() {
             </select>
           </div>
 
-          <button type="submit" disabled={carregando}>Filtrar</button>
-          <button type="button" onClick={voltarAoMes} disabled={carregando}>
-            Mês atual
-          </button>
+          <div className="acoes-filtros-lancamentos">
+            <button type="submit" disabled={carregando}>Filtrar</button>
+            <button type="button" onClick={voltarAoMes} disabled={carregando}>
+              Mês atual
+            </button>
+          </div>
         </form>
 
         <button type="button" onClick={carregar} disabled={carregando}>
