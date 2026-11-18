@@ -51,23 +51,48 @@ export default function Dashboard() {
     carregarResumo();
   }, [inicio, fim]);
 
+  const mesAtual = hoje.toLocaleDateString('pt-BR', {
+    month: 'long',
+    year: 'numeric',
+  });
+  const mesAtualCapitalizado =
+    mesAtual.charAt(0).toUpperCase() + mesAtual.slice(1);
+
   return (
-    <main>
+    <main className="dashboard-resumo">
       <h1>Resumo do mês</h1>
-      <p>{hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
+      <p>{mesAtualCapitalizado}</p>
 
       {erro && <p role="alert">{erro}</p>}
       {!totais && !erro && <p>Carregando resumo...</p>}
 
       {totais && (
-        <dl>
-          <dt>Entradas</dt>
-          <dd>{formatarValor(totais.entradas)}</dd>
-          <dt>Saídas</dt>
-          <dd>{formatarValor(totais.saidas)}</dd>
-          <dt>Saldo</dt>
-          <dd>{formatarValor(totais.saldo)}</dd>
-        </dl>
+        <div className="tabela-relatorio">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Entradas</td>
+                <td className="valor-entrada">{formatarValor(totais.entradas)}</td>
+              </tr>
+              <tr>
+                <td>Saídas</td>
+                <td className="valor-saida">{formatarValor(totais.saidas)}</td>
+              </tr>
+              <tr>
+                <td><strong>Saldo</strong></td>
+                <td className={Number(totais.saldo) >= 0 ? 'valor-entrada' : 'valor-saida'}>
+                  <strong>{formatarValor(totais.saldo)}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );
