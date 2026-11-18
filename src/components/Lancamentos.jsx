@@ -42,6 +42,18 @@ function formatarData(data) {
   return String(data ?? '').slice(0, 10).split('-').reverse().join('/');
 }
 
+function formatarPrimeiraLetraMaiuscula(texto) {
+  const valor = String(texto ?? '').trim();
+  return valor
+    ? valor.charAt(0).toUpperCase() + valor.slice(1)
+    : '';
+}
+
+function formatarDescricao(descricao) {
+  const semPrefixoDemo = String(descricao ?? '').replace(/^demo\s*:\s*/i, '');
+  return formatarPrimeiraLetraMaiuscula(semPrefixoDemo);
+}
+
 async function requisitar(caminho, opcoes = {}) {
   const token = localStorage.getItem('token');
 
@@ -189,7 +201,7 @@ export default function Lancamentos() {
   function editar(item) {
     setEditando(item);
     setFormulario({
-      descricao: item.descricao ?? '',
+      descricao: formatarDescricao(item.descricao),
       valor: String(item.valor ?? ''),
       tipo: item.tipo,
       data: String(item.data ?? '').slice(0, 10),
@@ -473,7 +485,7 @@ export default function Lancamentos() {
                       return (
                         <tr key={item.id}>
                           <td>
-                            {item.descricao}
+                            {formatarDescricao(item.descricao)}
                             {cartaoCredito && (
                               <small className="detalhe-parcelas">
                                 {totalParcelas} {totalParcelas === 1 ? 'parcela' : 'parcelas'}
@@ -482,7 +494,7 @@ export default function Lancamentos() {
                               </small>
                             )}
                           </td>
-                          <td>{item.tipo}</td>
+                          <td>{item.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
                           <td>{formatarValor(item.valor)}</td>
                           <td>{formatarData(item.data)}</td>
                           <td>
