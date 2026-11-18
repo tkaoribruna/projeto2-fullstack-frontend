@@ -301,24 +301,27 @@ export default function Lancamentos() {
       {erro && <p role="alert">{erro}</p>}
       {sucesso && <p role="status">{sucesso}</p>}
 
-      <form onSubmit={salvar}>
-        <h2>{editando ? 'Editar lançamento' : 'Novo lançamento'}</h2>
-
-        <div>
-          <label htmlFor="descricao">Descrição</label>
-          <input
-            id="descricao" name="descricao" value={formulario.descricao}
-            onChange={alterar} maxLength={120} required
-          />
+      <section className="cadastro-lancamento">
+        <div className="secao-cabecalho">
+          <h2>{editando ? 'Editar lançamento' : 'Novo lançamento'}</h2>
         </div>
+        <form onSubmit={salvar}>
 
-        <div>
-          <label htmlFor="valor">Valor (R$)</label>
-          <input
-            id="valor" name="valor" type="number" min="0.01" step="0.01"
-            value={formulario.valor} onChange={alterar} required
-          />
-        </div>
+          <div>
+            <label htmlFor="descricao">Descrição</label>
+            <input
+              id="descricao" name="descricao" value={formulario.descricao}
+              onChange={alterar} maxLength={120} required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="valor">Valor (R$)</label>
+            <input
+              id="valor" name="valor" type="number" min="0.01" step="0.01"
+              value={formulario.valor} onChange={alterar} required
+            />
+          </div>
 
         <div>
           <label htmlFor="tipo">Tipo</label>
@@ -372,19 +375,22 @@ export default function Lancamentos() {
           </div>
         )}
 
-        <button type="submit" disabled={salvando}>
-          {salvando ? 'Salvando...' : editando ? 'Salvar alterações' : 'Cadastrar lançamento'}
-        </button>
+          <button type="submit" disabled={salvando}>
+            {salvando ? 'Salvando...' : editando ? 'Salvar alterações' : 'Cadastrar lançamento'}
+          </button>
 
-        {editando && (
-          <button type="button" onClick={cancelar}>Cancelar edição</button>
-        )}
-      </form>
+          {editando && (
+            <button type="button" onClick={cancelar}>Cancelar edição</button>
+          )}
+        </form>
+      </section>
 
       <section className="lista-lancamentos">
-        <h2>Meus lançamentos</h2>
+        <div className="secao-cabecalho">
+          <h2>Meus lançamentos</h2>
+        </div>
 
-        <form onSubmit={aplicarFiltros}>
+        <form className="filtros-lancamentos" onSubmit={aplicarFiltros}>
           <div>
             <label htmlFor="filtroInicio">Data inicial</label>
             <input
