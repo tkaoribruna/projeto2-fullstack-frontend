@@ -242,27 +242,34 @@ export default function RelatorioFontesDestinos() {
               {contas.length === 0 ? (
                 <p>Nenhuma fonte/destino do tipo conta cadastrada.</p>
               ) : (
-                <div className="tabela-relatorio">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Conta</th>
-                        <th>Entradas</th>
-                        <th>Saídas</th>
-                        <th>Saldo</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {contas.map(item => (
-                        <tr key={item.id}>
-                          <td>{item.nome}</td>
-                          <td>{formatarMoeda(item.entradas)}</td>
-                          <td>{formatarMoeda(item.saidas)}</td>
-                          <td>{formatarMoeda(item.saldo)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="saldos-contas">
+                  {contas.map(item => (
+                    <article className="saldo-conta" key={item.id}>
+                      <h3>{item.nome}</h3>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Entradas</th>
+                            <td className="valor-entrada">
+                              {formatarMoeda(item.entradas)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Saídas</th>
+                            <td className="valor-saida">
+                              {formatarMoeda(item.saidas)}
+                            </td>
+                          </tr>
+                          <tr className="saldo-conta-total">
+                            <th scope="row">Saldo</th>
+                            <td className={Number(item.saldo) >= 0 ? 'valor-entrada' : 'valor-saida'}>
+                              {formatarMoeda(item.saldo)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </article>
+                  ))}
                 </div>
               )}
             </>
@@ -272,4 +279,3 @@ export default function RelatorioFontesDestinos() {
     </main>
   );
 }
-
