@@ -269,29 +269,41 @@ export default function FontesDestinos() {
       )}
 
       {!carregando && fontes.length > 0 && (
-        <ul>
-          {fontes.map(fonte => (
-            <li key={fonte.id}>
-              <strong>{fonte.nome}</strong> — {NOMES_TIPOS[fonte.tipo] ?? fonte.tipo}
-              {fonte.tipo === 'cartao_credito' && (
-                <span>
-                  {' '}· Fechamento: {fonte.diaFechamento}
-                  {' '}· Vencimento: {fonte.diaVencimento}
-                  {' '}· Limite: {formatarValor(fonte.limite)}
-                </span>
-              )}
-
-              <div className="acoes-lancamento">
-                <button type="button" onClick={() => editar(fonte)} disabled={salvando}>
-                  Editar
-                </button>
-                <button type="button" onClick={() => excluir(fonte)} disabled={salvando}>
-                  Excluir
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="tabela-cadastro-scroll">
+          <table className="tabela-cadastro">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Fechamento</th>
+                <th>Vencimento</th>
+                <th>Limite</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fontes.map(fonte => (
+                <tr key={fonte.id}>
+                  <td>{fonte.nome}</td>
+                  <td>{NOMES_TIPOS[fonte.tipo] ?? fonte.tipo}</td>
+                  <td>{fonte.tipo === 'cartao_credito' ? fonte.diaFechamento : '—'}</td>
+                  <td>{fonte.tipo === 'cartao_credito' ? fonte.diaVencimento : '—'}</td>
+                  <td>{fonte.tipo === 'cartao_credito' ? formatarValor(fonte.limite) : '—'}</td>
+                  <td>
+                    <div className="acoes-lancamento">
+                      <button type="button" onClick={() => editar(fonte)} disabled={salvando}>
+                        Editar
+                      </button>
+                      <button type="button" onClick={() => excluir(fonte)} disabled={salvando}>
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );
