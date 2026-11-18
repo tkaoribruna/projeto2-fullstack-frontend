@@ -237,6 +237,170 @@ main {
   border-bottom: 1px solid #e5eee8;
 }
 
+.pagina-faturas {
+  max-width: 1000px;
+}
+
+.cartao-faturas {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid #d9e5de;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.cartao-faturas-cabecalho {
+  padding: 16px 20px;
+  border-bottom: 1px solid #d9e5de;
+  background: #176345;
+}
+
+.cartao-faturas-cabecalho h2 {
+  margin: 0;
+  color: #fff;
+}
+
+.limites-cartao {
+  padding: 16px 20px;
+  border-bottom: 1px solid #d9e5de;
+  background: #f8fbf9;
+}
+
+.limites-cartao table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.limites-cartao th,
+.limites-cartao td {
+  padding: 10px 12px;
+  border-right: 1px solid #dfe9e3;
+  border-bottom: 1px solid #dfe9e3;
+  text-align: left;
+}
+
+.limites-cartao td {
+  text-align: right;
+  font-weight: 700;
+}
+
+.limites-cartao tr:last-child th,
+.limites-cartao tr:last-child td {
+  border-bottom: none;
+}
+
+.limites-cartao th:last-child,
+.limites-cartao td:last-child {
+  border-right: none;
+}
+
+.lista-faturas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.fatura-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d9e5de;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.fatura-card-atual {
+  border-color: #82ad98;
+  box-shadow: 0 4px 14px rgba(23, 99, 69, 0.08);
+}
+
+.fatura-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #d9e5de;
+  background: #f1f7f3;
+}
+
+.fatura-cabecalho h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.fatura-cabecalho span {
+  color: #176345;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.fatura-dados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  border-bottom: 1px solid #e5eee8;
+}
+
+.fatura-dados div {
+  padding: 12px 16px;
+  border-right: 1px solid #e5eee8;
+}
+
+.fatura-dados div:last-child {
+  border-right: none;
+  text-align: right;
+}
+
+.fatura-dados dt {
+  color: #52665c;
+  font-size: 13px;
+}
+
+.fatura-dados dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+}
+
+.fatura-vazia {
+  margin: 0;
+  padding: 16px;
+  color: #52665c;
+  text-align: center;
+}
+
+.fatura-lancamentos {
+  overflow-x: auto;
+}
+
+.fatura-lancamentos table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.fatura-lancamentos th,
+.fatura-lancamentos td {
+  padding: 10px;
+  border-bottom: 1px solid #e5eee8;
+  text-align: left;
+}
+
+.fatura-lancamentos th {
+  background: #fafcfb;
+  color: #52665c;
+  font-size: 12px;
+}
+
+.fatura-lancamentos th:nth-child(2),
+.fatura-lancamentos td:nth-child(2),
+.fatura-lancamentos th:last-child,
+.fatura-lancamentos td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
 .tabela-lancamentos tbody tr:nth-child(even) {
   background-color: #f8fbf9;
 }
@@ -509,6 +673,10 @@ main {
 
   .categorias-grafico {
     grid-row: 1;
+  }
+
+  .lista-faturas {
+    grid-template-columns: 1fr;
   }
 }
 
