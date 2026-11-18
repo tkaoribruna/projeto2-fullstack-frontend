@@ -51,7 +51,7 @@ export default function Faturas() {
   }, []);
 
   return (
-    <main className="pagina-lancamentos">
+    <main className="pagina-faturas">
       <h1>Faturas dos cartões</h1>
 
       {carregando && <p>Carregando faturas...</p>}
@@ -61,41 +61,89 @@ export default function Faturas() {
       )}
 
       {cartoes.map(cartao => (
-        <section key={cartao.id}>
-          <h2>{cartao.nome}</h2>
+        <section className="cartao-faturas" key={cartao.id}>
+          <div className="cartao-faturas-cabecalho">
+            <h2>{cartao.nome}</h2>
+          </div>
 
-          <p><strong>Limite cadastrado</strong> {formatarValor(cartao.limite)}</p>
-          <p><strong>Limite utilizado</strong> {formatarValor(cartao.limiteUtilizado)}</p>
-          <p><strong>Limite disponível</strong> {formatarValor(cartao.limiteDisponivel)}</p>
+          <div className="limites-cartao">
+            <table>
+              <tbody>
+                <tr>
+                  <th scope="row">Limite cadastrado</th>
+                  <td>{formatarValor(cartao.limite)}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Limite utilizado</th>
+                  <td className="valor-saida">
+                    {formatarValor(cartao.limiteUtilizado)}
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Limite disponível</th>
+                  <td className="valor-entrada">
+                    {formatarValor(cartao.limiteDisponivel)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          {cartao.faturas.map(fatura => (
-            <article key={fatura.fechamento}>
-              <h3>
-                {fatura.atual ? 'Fatura atual' : 'Fatura futura'}
-                {' — '}
-                {formatarData(fatura.vencimento)}
-              </h3>
+          <div className="lista-faturas">
+            {cartao.faturas.map(fatura => (
+              <article
+                className={`fatura-card${fatura.atual ? ' fatura-card-atual' : ''}`}
+                key={fatura.fechamento}
+              >
+                <div className="fatura-cabecalho">
+                  <h3>
+                    {fatura.atual ? 'Fatura atual' : 'Fatura futura'}
+                  </h3>
+                  <span>{formatarData(fatura.vencimento)}</span>
+                </div>
 
-              <p>Fechamento em {formatarData(fatura.fechamento)}</p>
-              <p><strong>Total</strong> {formatarValor(fatura.total)}</p>
+                <dl className="fatura-dados">
+                  <div>
+                    <dt>Fechamento</dt>
+                    <dd>{formatarData(fatura.fechamento)}</dd>
+                  </div>
+                  <div>
+                    <dt>Total</dt>
+                    <dd>{formatarValor(fatura.total)}</dd>
+                  </div>
+                </dl>
 
-              {fatura.lancamentos.length === 0 ? (
-                <p>Nenhum lançamento nesta fatura.</p>
-              ) : (
-                <ul>
-                  {fatura.lancamentos.map(item => (
-                    <li key={item.id}>
-                      {item.descricao}
-                      {item.totalParcelas > 1 &&
-                        ` — parcela ${item.parcelaAtual}/${item.totalParcelas}`}
-                      {' — '}
-                      {formatarValor(item.valor)}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          ))}
+                {fatura.lancamentos.length === 0 ? (
+                  <p className="fatura-vazia">Nenhum lançamento nesta fatura.</p>
+                ) : (
+                  <div className="fatura-lancamentos">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Descrição</th>
+                          <th>Parcela</th>
+                          <th>Valor</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {fatura.lancamentos.map(item => (
+                          <tr key={item.id}>
+                            <td>{item.descricao}</td>
+                            <td>
+                              {item.totalParcelas > 1
+                                ? `${item.parcelaAtual}/${item.totalParcelas}`
+                                : '—'}
+                            </td>
+                            <td>{formatarValor(item.valor)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
         </section>
       ))}
     </main>
