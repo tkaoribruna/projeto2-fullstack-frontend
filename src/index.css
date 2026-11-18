@@ -567,6 +567,52 @@ main {
   border-bottom: 1px solid #d9e5de;
 }
 
+.fontes-destinos-tabelas {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.tabela-secao h2 {
+  margin: 0 0 12px;
+  color: #172f5d;
+  font-size: 24px;
+}
+
+.tabela-secao .tabela-relatorio {
+  border: 1px solid #d9e5de;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.tabela-secao table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tabela-secao th,
+.tabela-secao td {
+  padding: 12px 10px;
+  font-size: 16px;
+  white-space: nowrap;
+  border-bottom: 1px solid #d9e5de;
+}
+
+.tabela-secao th {
+  background: #f1f7f3;
+  font-size: 16px;
+}
+
+.tabela-secao tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela-secao td:last-child,
+.tabela-secao th:last-child {
+  text-align: right;
+  padding-right: 16px;
+}
+
 .saldos-contas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
