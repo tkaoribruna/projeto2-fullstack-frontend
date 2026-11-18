@@ -286,6 +286,60 @@ main {
   border-bottom: 1px solid #d9e5de;
 }
 
+.saldos-contas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.saldo-conta {
+  overflow: hidden;
+  border: 1px solid #d9e5de;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.saldo-conta h3 {
+  margin: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid #d9e5de;
+  background: #f1f7f3;
+  font-size: 16px;
+}
+
+.saldo-conta table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.saldo-conta th,
+.saldo-conta td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5eee8;
+  text-align: left;
+}
+
+.saldo-conta td {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.saldo-conta tr:last-child th,
+.saldo-conta tr:last-child td {
+  border-bottom: none;
+}
+
+.saldo-conta-total {
+  background: #f8fbf9;
+}
+
+.saldo-conta-total th,
+.saldo-conta-total td {
+  font-size: 17px;
+  font-weight: 700;
+}
+
 .relatorio-categorias {
   max-width: 1000px;
 }
