@@ -452,13 +452,30 @@ export default function Lancamentos() {
           <p>Carregando...</p>
         ) : (
           <>
-            <p>
-              <strong>Entradas</strong> {formatarValor(totais.entradas)}
-              {' · '}
-              <strong>Saídas</strong> {formatarValor(totais.saidas)}
-              {' · '}
-              <strong>Saldo</strong> {formatarValor(totais.saldo)}
-            </p>
+            <div className="tabela-resumo-lancamentos">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Entradas</th>
+                    <th>Saídas</th>
+                    <th>Saldo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="valor-entrada">
+                      {formatarValor(totais.entradas)}
+                    </td>
+                    <td className="valor-saida">
+                      {formatarValor(totais.saidas)}
+                    </td>
+                    <td className={Number(totais.saldo) >= 0 ? 'valor-entrada' : 'valor-saida'}>
+                      {formatarValor(totais.saldo)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             {lancamentos.length === 0 ? (
               <p>Nenhum lançamento encontrado.</p>
