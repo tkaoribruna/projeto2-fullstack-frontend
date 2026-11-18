@@ -189,37 +189,41 @@ export default function Categorias() {
       ) : !categoriasCarregadas ? (
         <p>Atualize a lista para consultar as categorias cadastradas.</p>
       ) : (
-        <table className="tabela-categorias">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Tipo</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categorias.map(categoria => (
-              <tr key={categoria.id}>
-                <td>{categoria.nome}</td>
-                <td>{categoria.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
-                <td>
-                  <button
-                    type="button"
-                    onClick={() => editar(categoria)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => excluir(categoria)}
-                  >
-                    Excluir
-                  </button>
-                </td>
+        <div className="tabela-cadastro-scroll">
+          <table className="tabela-cadastro">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categorias.map(categoria => (
+                <tr key={categoria.id}>
+                  <td>{categoria.nome}</td>
+                  <td>{categoria.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
+                  <td>
+                    <div className="acoes-lancamento">
+                      <button
+                        type="button"
+                        onClick={() => editar(categoria)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => excluir(categoria)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );
